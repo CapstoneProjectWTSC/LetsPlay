@@ -1,6 +1,8 @@
 package wtsc.letsplay10;
 
+import android.content.Context;
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -31,15 +33,24 @@ public class Introduction extends AppCompatActivity implements OnClickListener, 
 
     private User user = new User();
 
-    private SharedPreferences  mPrefs;
-
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.intro_page);
 
-        mPrefs = getPreferences(MODE_PRIVATE);
+        preferences = getSharedPreferences("userSettings", MODE_PRIVATE);
+
+        String json = preferences.getString("User", "");
+
+
+        if (json != "")
+        {
+            Gson gson = new Gson();
+            user = gson.fromJson(json, User.class);
+            startActivity(new Intent(getApplicationContext(), Settings.class));
+        }
 
         emailSubmission = (EditText) findViewById(R.id.emailSubmission);
         usernameSubmission = (EditText) findViewById(R.id.usernameSubmission);
@@ -110,7 +121,7 @@ public class Introduction extends AppCompatActivity implements OnClickListener, 
                 if(!validationResult.equals("Success!")){
                     passwordSubmission.setError(validationResult);
                     break;
-                }
+                }*/
 
                 //if(usernname is in database){
                 // usernameSubmission.setError("That username is already in use.");
@@ -124,16 +135,16 @@ public class Introduction extends AppCompatActivity implements OnClickListener, 
 
                 //send username email, password combo to database
 
-                //setContentView(R.layout.'name of the map page');*/
+                //setContentView(R.layout.'name of the map page');
                 user.setEmail(emailSubmissionString);
                 user.setGamename(usernameSubmissionString);
                 user.setPassword(passwordSubmissionString);
 
-                /*SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                SharedPreferences.Editor prefsEditor = preferences.edit();
                 Gson gson = new Gson();
                 String json = gson.toJson(user);
                 prefsEditor.putString("User", json);
-                prefsEditor.commit();*/
+                prefsEditor.commit();
 
                startActivity(new Intent(getApplicationContext(), Settings.class));
 

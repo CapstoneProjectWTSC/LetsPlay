@@ -4,6 +4,8 @@ package wtsc.letsplay10;
  * Created by John on 2/28/2017.
  */
 
+        import android.content.SharedPreferences;
+        import android.preference.PreferenceManager;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.view.KeyEvent;
@@ -15,6 +17,8 @@ package wtsc.letsplay10;
         import org.apache.commons.validator.routines.EmailValidator;
         import android.view.inputmethod.EditorInfo;
         import android.view.inputmethod.InputMethodManager;
+
+        import com.google.gson.Gson;
 
 public class  Settings extends AppCompatActivity implements OnClickListener, OnKeyListener{
 
@@ -31,10 +35,20 @@ public class  Settings extends AppCompatActivity implements OnClickListener, OnK
 
     private User user;
 
+    private SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_page);
+
+        preferences = getSharedPreferences("userSettings", MODE_PRIVATE);
+        int storedPreference = preferences.getInt("storedInt", 0);
+
+        String json = preferences.getString("User", "");
+
+        Gson gson = new Gson();
+        user = gson.fromJson(json, User.class);
 
         emailSubmission = (EditText) findViewById(R.id.emailSubmission);
         usernameSubmission = (EditText) findViewById(R.id.usernameSubmission);
@@ -89,15 +103,19 @@ public class  Settings extends AppCompatActivity implements OnClickListener, OnK
             case R.id.confirm:
                 passwordSubmission.setError(null);
 
-                if(emailSubmission.getText().toString() != null)
+                if(!emailSubmission.getText().toString().equals(""))
                 {
                     emailSubmissionString = emailSubmission.getText().toString();
+                    if (!EmailValidator.getInstance().isValid(emailSubmissionString)){
+                        emailSubmission.setError("Please enter a valid e-mail.");
+                        break;
+                    }
                 }
                 else
                 {
                     emailSubmissionString = user.getEmail();
                 }
-                if(usernameSubmission.getText().toString() != null)
+                if(!usernameSubmission.getText().toString().equals(""))
                 {
                     usernameSubmissionString = usernameSubmission.getText().toString();
                 }
@@ -105,10 +123,19 @@ public class  Settings extends AppCompatActivity implements OnClickListener, OnK
                 {
                     usernameSubmissionString = user.getGameName();
                 }
-                if(passwordSubmission.getText().toString() != null || passwordConfirmation.getText().toString() != null)
+                if(!passwordSubmission.getText().toString().equals("") || !passwordConfirmation.getText().toString().equals(""))
                 {
                     passwordSubmissionString= passwordSubmission.getText().toString();
                     passwordConfirmationString= passwordConfirmation.getText().toString();
+
+                    PasswordValidation validate = new PasswordValidation();
+
+                    String validationResult = validate.validateNewPass(passwordSubmissionString, passwordConfirmationString);
+
+                    if(!validationResult.equals("Success!")){
+                        passwordSubmission.setError(validationResult);
+                        break;
+                    }
                 }
                 else
                 {
@@ -116,20 +143,18 @@ public class  Settings extends AppCompatActivity implements OnClickListener, OnK
                     passwordConfirmationString = user.getPassword();
                 }
 
+                int storedPreference = preferences.getInt("storedInt", 0);
 
-                if (!EmailValidator.getInstance().isValid(emailSubmissionString)){
-                    emailSubmission.setError("Please enter a valid e-mail.");
-                    break;
-                }
+                user.setEmail(emailSubmissionString);
+                user.setGamename(usernameSubmissionString);
+                user.setPassword(passwordSubmissionString);
 
-                PasswordValidation validate = new PasswordValidation();
+                SharedPreferences.Editor editor = preferences.edit();
+                Gson gson = new Gson();
+                String json = gson.toJson(user);
+                editor.putString("User", json);
+                editor.commit();
 
-                String validationResult = validate.validateNewPass(passwordSubmissionString, passwordConfirmationString);
-
-                if(!validationResult.equals("Success!")){
-                    passwordSubmission.setError(validationResult);
-                    break;
-                }
 
                 //if(usernname is in database){
                 // usernameSubmission.setError("That username is already in use.");
@@ -144,6 +169,7 @@ public class  Settings extends AppCompatActivity implements OnClickListener, OnK
                 //send username email, password combo to database
 
                 //setContentView(R.layout.'name of the map page');
+
                 break;
         }
     }
