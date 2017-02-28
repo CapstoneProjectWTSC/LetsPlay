@@ -1,22 +1,22 @@
 package wtsc.letsplay10;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.view.View.OnClickListener;
-import android.view.View.OnKeyListener;
-import org.apache.commons.validator.routines.EmailValidator;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.content.SharedPreferences;
+/**
+ * Created by John on 2/28/2017.
+ */
 
-import com.google.gson.Gson;
+        import android.support.v7.app.AppCompatActivity;
+        import android.os.Bundle;
+        import android.view.KeyEvent;
+        import android.view.View;
+        import android.widget.Button;
+        import android.widget.EditText;
+        import android.view.View.OnClickListener;
+        import android.view.View.OnKeyListener;
+        import org.apache.commons.validator.routines.EmailValidator;
+        import android.view.inputmethod.EditorInfo;
+        import android.view.inputmethod.InputMethodManager;
 
-public class Introduction extends AppCompatActivity implements OnClickListener, OnKeyListener{
+public class  Settings extends AppCompatActivity implements OnClickListener, OnKeyListener{
 
     private EditText emailSubmission;
     private EditText usernameSubmission;
@@ -29,17 +29,12 @@ public class Introduction extends AppCompatActivity implements OnClickListener, 
     private String passwordSubmissionString;
     private String passwordConfirmationString;
 
-    private User user = new User();
-
-    private SharedPreferences  mPrefs;
-
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.intro_page);
-
-        mPrefs = getPreferences(MODE_PRIVATE);
+        setContentView(R.layout.settings_page);
 
         emailSubmission = (EditText) findViewById(R.id.emailSubmission);
         usernameSubmission = (EditText) findViewById(R.id.usernameSubmission);
@@ -93,12 +88,36 @@ public class Introduction extends AppCompatActivity implements OnClickListener, 
         switch (v.getId()) {
             case R.id.confirm:
                 passwordSubmission.setError(null);
-                emailSubmissionString = emailSubmission.getText().toString();
-                usernameSubmissionString= usernameSubmission.getText().toString();
-                passwordSubmissionString= passwordSubmission.getText().toString();
-                passwordConfirmationString= passwordConfirmation.getText().toString();
 
-                /*if (!EmailValidator.getInstance().isValid(emailSubmissionString)){
+                if(emailSubmission.getText().toString() != null)
+                {
+                    emailSubmissionString = emailSubmission.getText().toString();
+                }
+                else
+                {
+                    emailSubmissionString = user.getEmail();
+                }
+                if(usernameSubmission.getText().toString() != null)
+                {
+                    usernameSubmissionString = usernameSubmission.getText().toString();
+                }
+                else
+                {
+                    usernameSubmissionString = user.getGameName();
+                }
+                if(passwordSubmission.getText().toString() != null || passwordConfirmation.getText().toString() != null)
+                {
+                    passwordSubmissionString= passwordSubmission.getText().toString();
+                    passwordConfirmationString= passwordConfirmation.getText().toString();
+                }
+                else
+                {
+                    passwordSubmissionString = user.getPassword();
+                    passwordConfirmationString = user.getPassword();
+                }
+
+
+                if (!EmailValidator.getInstance().isValid(emailSubmissionString)){
                     emailSubmission.setError("Please enter a valid e-mail.");
                     break;
                 }
@@ -124,19 +143,7 @@ public class Introduction extends AppCompatActivity implements OnClickListener, 
 
                 //send username email, password combo to database
 
-                //setContentView(R.layout.'name of the map page');*/
-                user.setEmail(emailSubmissionString);
-                user.setGamename(usernameSubmissionString);
-                user.setPassword(passwordSubmissionString);
-
-                /*SharedPreferences.Editor prefsEditor = mPrefs.edit();
-                Gson gson = new Gson();
-                String json = gson.toJson(user);
-                prefsEditor.putString("User", json);
-                prefsEditor.commit();*/
-
-               startActivity(new Intent(getApplicationContext(), Settings.class));
-
+                //setContentView(R.layout.'name of the map page');
                 break;
         }
     }

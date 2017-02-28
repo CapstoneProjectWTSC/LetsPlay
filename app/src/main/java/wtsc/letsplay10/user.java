@@ -17,6 +17,8 @@ public class User {
 
     public User()   // default constructor
     {
+        fName = "";
+        lName = "";
     }
 
     public User(User user){
