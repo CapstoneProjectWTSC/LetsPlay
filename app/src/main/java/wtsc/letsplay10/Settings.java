@@ -146,7 +146,7 @@ public class  Settings extends AppCompatActivity implements OnClickListener, OnK
                 int storedPreference = preferences.getInt("storedInt", 0);
 
                 user.setEmail(emailSubmissionString);
-                user.setGamename(usernameSubmissionString);
+                user.setGameName(usernameSubmissionString);
                 user.setPassword(passwordSubmissionString);
 
                 SharedPreferences.Editor editor = preferences.edit();

@@ -137,7 +137,7 @@ public class Introduction extends AppCompatActivity implements OnClickListener, 
 
                 //setContentView(R.layout.'name of the map page');
                 user.setEmail(emailSubmissionString);
-                user.setGamename(usernameSubmissionString);
+                user.setGameName(usernameSubmissionString);
                 user.setPassword(passwordSubmissionString);
 
                 SharedPreferences.Editor prefsEditor = preferences.edit();

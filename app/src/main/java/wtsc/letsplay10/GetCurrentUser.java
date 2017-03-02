@@ -53,7 +53,7 @@ public class GetCurrentUser extends AsyncTask<String,String,User> {
                     newUser.setID(rs.getInt("ID"));
                     newUser.setFirstName(rs.getString("First_Name"));
                     newUser.setLastName(rs.getString("Last_Name"));
-                    newUser.setGamename(rs.getString("GameName"));
+                    newUser.setGameName(rs.getString("GameName"));
                     newUser.setPassword(rs.getString("Password"));
                     newUser.setEmail(rs.getString("Email"));
                 }
